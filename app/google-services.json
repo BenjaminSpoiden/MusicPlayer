@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "401220478172",
+    "project_id": "musicplayer-e731d",
+    "storage_bucket": "musicplayer-e731d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:401220478172:android:7d13241f6502fac70e4019",
+        "android_client_info": {
+          "package_name": "com.ben.musicplayer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "401220478172-md22k1f7vq1o9e7g7962v85svhusrto7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBkduvY0-ABnML-IPr5wjpA2WdTEiOYQoU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "401220478172-md22k1f7vq1o9e7g7962v85svhusrto7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
