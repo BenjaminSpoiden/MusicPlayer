@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.session.MediaSessionCompat
 import androidx.media.MediaBrowserServiceCompat
+import com.ben.musicplayer.interfaces.SongCallbackListener
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
@@ -19,17 +20,21 @@ import javax.inject.Inject
 class MusicService @Inject constructor(
     private val dataSourceFactory: DefaultDataSourceFactory,
     private val exoPlayer: SimpleExoPlayer
-) : MediaBrowserServiceCompat() {
+) : MediaBrowserServiceCompat(), SongCallbackListener {
 
     companion object {
         private const val SERVICE_TAG = "service_tag"
     }
+
+    private lateinit var musicNotificationService: MusicNotificationService
 
     private val musicServiceCoroutineJob = Job()
     private val musicServiceCoroutineScope = CoroutineScope(Dispatchers.Main + musicServiceCoroutineJob)
 
     private lateinit var mediaSession: MediaSessionCompat
     private lateinit var mediaSessionConnector: MediaSessionConnector
+
+    var isForegroundService = false
 
     override fun onCreate() {
         super.onCreate()
@@ -43,6 +48,14 @@ class MusicService @Inject constructor(
         }
 
         sessionToken = mediaSession.sessionToken
+
+        musicNotificationService = MusicNotificationService(
+            this,
+            mediaSession.sessionToken,
+            MusicPlayerNotificationImpl(this),
+            this
+        )
+
         mediaSessionConnector = MediaSessionConnector(mediaSession)
         mediaSessionConnector.setPlayer(exoPlayer)
     }
@@ -59,6 +72,10 @@ class MusicService @Inject constructor(
         parentId: String,
         result: Result<MutableList<MediaBrowserCompat.MediaItem>>
     ) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onNewSongCallbackListener() {
         TODO("Not yet implemented")
     }
 
