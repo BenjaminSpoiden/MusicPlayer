@@ -13,6 +13,7 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class FirebaseMusicSourceService @Inject constructor(
@@ -36,7 +37,7 @@ class FirebaseMusicSourceService @Inject constructor(
         }
 
     fun onReady(action: (Boolean) -> Unit): Boolean {
-        return if(state == ServiceState.CREATED || state == ServiceState.INITIALIZED) {
+        return if(state == ServiceState.CREATED || state == ServiceState.INITIALIZING) {
             readyListener.add(action)
             false
         } else {
@@ -47,9 +48,10 @@ class FirebaseMusicSourceService @Inject constructor(
 
     var songs: List<MediaMetadataCompat> = emptyList()
 
-    suspend fun onFetchMediaMetadata() = musicPlayerDatabase.getSongs().flowOn(Dispatchers.IO).collect {
+    suspend fun onFetchMediaMetadata() = withContext(Dispatchers.IO) {
         state = ServiceState.INITIALIZING
-        songs = it.map { song ->
+        val allSongs = musicPlayerDatabase.getSongs()
+        songs = allSongs.map { song ->
             Builder()
                 .putString(METADATA_KEY_ARTIST, song.subtitle)
                 .putString(METADATA_KEY_MEDIA_ID, song.mediaId)
@@ -75,7 +77,7 @@ class FirebaseMusicSourceService @Inject constructor(
         return concatenatingMediaSource
     }
 
-    fun mediaItem() = songs.map { song ->
+    fun mediaItems() = songs.map { song ->
         val description = MediaDescriptionCompat.Builder()
             .setMediaUri(song.getString(METADATA_KEY_MEDIA_URI).toUri())
             .setTitle(song.description.title)
@@ -85,5 +87,5 @@ class FirebaseMusicSourceService @Inject constructor(
             .build()
 
         MediaBrowserCompat.MediaItem(description, FLAG_PLAYABLE)
-    }
+    }.toMutableList()
 }

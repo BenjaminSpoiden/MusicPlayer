@@ -16,14 +16,12 @@ import javax.inject.Inject
 class MusicPlayerDatabase @Inject constructor(firestore: FirebaseFirestore) {
     private val songCollection = firestore.collection(SONG_COLLECTION)
 
-    fun getSongs(): Flow<List<Song>> = flow {
-        while(currentCoroutineContext().isActive) {
-            try {
-                emit(songCollection.get().await().toObjects(Song::class.java))
-            } catch (e: Exception) {
-                Log.d("Tag", "${e.message}")
-                emit(emptyList<Song>())
-            }
+    suspend fun getSongs(): List<Song> {
+        return try {
+            songCollection.get().await().toObjects(Song::class.java)
+        } catch (e: Exception) {
+            Log.d("Tag", "${e.message}")
+            emptyList()
         }
     }
 }

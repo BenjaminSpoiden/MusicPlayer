@@ -3,6 +3,8 @@ package com.ben.musicplayer.service
 import android.app.PendingIntent
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
@@ -22,17 +24,17 @@ import kotlinx.coroutines.*
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class MusicService @Inject constructor(
-    private val dataSourceFactory: DefaultDataSourceFactory,
-    private val exoPlayer: SimpleExoPlayer,
-    private val firebaseMusicSourceService: FirebaseMusicSourceService
-) : MediaBrowserServiceCompat(), SongCallbackListener, PlayerPreparedListener {
+class MusicService: MediaBrowserServiceCompat(), SongCallbackListener, PlayerPreparedListener {
 
     companion object {
         private const val SERVICE_TAG = "service_tag"
         var currentSongDuration = 0L
             private set
     }
+
+    @Inject lateinit var dataSourceFactory: DefaultDataSourceFactory
+    @Inject lateinit var exoPlayer: SimpleExoPlayer
+    @Inject lateinit var firebaseMusicSourceService: FirebaseMusicSourceService
 
     private lateinit var musicNotificationService: MusicNotificationService
 
@@ -89,9 +91,12 @@ class MusicService @Inject constructor(
         playNow: Boolean
     ) {
         val currentSongIndex = if(currentlyPlayingSong == null) 0 else songs.indexOf(playableItem)
-        exoPlayer.prepare(firebaseMusicSourceService.mediaSource(dataSourceFactory))
-        exoPlayer.seekTo(currentSongIndex, 0L)
-        exoPlayer.playWhenReady = playNow
+//        exoPlayer.setThrowsWhenUsingWrongThread(false)
+        Handler(Looper.getMainLooper()).post {
+            exoPlayer.prepare(firebaseMusicSourceService.mediaSource(dataSourceFactory))
+            exoPlayer.seekTo(currentSongIndex, 0L)
+            exoPlayer.playWhenReady = playNow
+        }
     }
 
     override fun onGetRoot(
@@ -110,7 +115,7 @@ class MusicService @Inject constructor(
            MEDIA_ROOT_ID -> {
                val resultSent = firebaseMusicSourceService.onReady { isReady ->
                    if(isReady) {
-                       result.sendResult(firebaseMusicSourceService.mediaItem().toMutableList())
+                       result.sendResult(firebaseMusicSourceService.mediaItems())
                        if(!isPlayerInitialized && firebaseMusicSourceService.songs.isNotEmpty()) {
                             preparePlayer(firebaseMusicSourceService.songs, firebaseMusicSourceService.songs[0], false)
                             isPlayerInitialized = true
