@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">MusicPlayer</string>
+    <string name="notification_name">Music Channel Player</string>
+    <string name="notification_desc">Display the current music being played.</string>
 </resources>
