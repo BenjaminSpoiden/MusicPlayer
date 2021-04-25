@@ -13,6 +13,7 @@ import com.ben.musicplayer.service.implementations.MusicPlaybackPreparerImpl
 import com.ben.musicplayer.service.implementations.MusicPlayerEventImpl
 import com.ben.musicplayer.service.implementations.MusicPlayerNotificationImpl
 import com.ben.musicplayer.utils.MEDIA_ROOT_ID
+import com.ben.musicplayer.utils.NETWORK_ERROR
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
@@ -115,7 +116,8 @@ class MusicService @Inject constructor(
                             isPlayerInitialized = true
                        }
                    } else {
-                       result.sendResult(null)
+                       mediaSession.sendSessionEvent(NETWORK_ERROR, null)
+                       result.sendResult(null) //NetworkError
                    }
                }
                if(!resultSent) {

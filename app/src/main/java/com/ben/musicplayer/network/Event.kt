@@ -1,6 +1,6 @@
 package com.ben.musicplayer.network
 
-class Event<out T>(private val response: T) {
+open class Event<out T>(private val response: T) {
     var hasBeenHandled = false
         private set
 
