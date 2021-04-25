@@ -1,5 +1,6 @@
 package com.ben.musicplayer.network
 
+import android.util.Log
 import com.ben.musicplayer.model.Song
 import com.ben.musicplayer.utils.SONG_COLLECTION
 import com.google.firebase.firestore.FirebaseFirestore
@@ -20,6 +21,7 @@ class MusicPlayerDatabase @Inject constructor(firestore: FirebaseFirestore) {
             try {
                 emit(songCollection.get().await().toObjects(Song::class.java))
             } catch (e: Exception) {
+                Log.d("Tag", "${e.message}")
                 emit(emptyList<Song>())
             }
         }
