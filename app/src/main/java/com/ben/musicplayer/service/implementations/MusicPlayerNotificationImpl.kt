@@ -1,8 +1,9 @@
-package com.ben.musicplayer.service
+package com.ben.musicplayer.service.implementations
 
 import android.app.Notification
 import android.content.Intent
 import androidx.core.content.ContextCompat
+import com.ben.musicplayer.service.MusicService
 import com.ben.musicplayer.utils.NOTIFICATION_ID
 import com.google.android.exoplayer2.ui.PlayerNotificationManager
 import javax.inject.Inject
