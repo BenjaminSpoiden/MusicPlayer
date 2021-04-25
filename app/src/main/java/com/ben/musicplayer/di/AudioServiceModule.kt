@@ -1,11 +1,13 @@
 package com.ben.musicplayer.di
 
 import android.content.Context
+import com.ben.musicplayer.network.MusicPlayerDatabase
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.audio.AudioAttributes
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
+import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -40,4 +42,8 @@ object AudioServiceModule {
     fun provideDataSourceFactory(
         @ApplicationContext context: Context
     ): DefaultDataSourceFactory = DefaultDataSourceFactory(context, Util.getUserAgent(context, "MusicPlayer"))
+
+    @ServiceScoped
+    @Provides
+    fun provideMusicDatabase() = MusicPlayerDatabase(firestore = FirebaseFirestore.getInstance())
 }
