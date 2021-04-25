@@ -2,7 +2,6 @@ package com.ben.musicplayer.service
 
 import android.content.ComponentName
 import android.content.Context
-import android.media.browse.MediaBrowser
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
@@ -14,6 +13,8 @@ import com.ben.musicplayer.network.Event
 import com.ben.musicplayer.network.ResponseStatus
 import com.ben.musicplayer.utils.NETWORK_ERROR
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.emptyFlow
 
 class MusicServiceConnection(
    @ApplicationContext context: Context
